@@ -1,3 +1,4 @@
+import json
 from fuctions import create_matrix_adj, get_min_degree, get_max_degree, print_result
 
 borders = {
@@ -35,9 +36,11 @@ print_result(matrix_adj)
 print()
 
 max_degree = get_max_degree(matrix_adj)
-print(max_degree)
+print("MAX DEGREE:")
+print(json.dumps(max_degree, indent=4))
 print()
 
+print("MIN DEGREE:")
 min_degree = get_min_degree(matrix_adj)
-print(min_degree)
+print(json.dumps(min_degree, indent=4))
 print()
