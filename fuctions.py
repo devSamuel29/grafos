@@ -1,44 +1,66 @@
-def create_matrix_adj(dictionary):
-    states = list(dictionary.keys())
+def create_matrix_adj(states, edges):
     num_states = len(states)
-    matrix_adj = {state: [0] * num_states for state in states}
+    matrix_adj = [[0] * num_states for _ in range(num_states)]
 
-    for state in states:
-        borders = dictionary[state]
-        for border in borders:
-            j = states.index(border)
-            matrix_adj[state][j] = 1
-            
+    for edge in edges:
+        i, j = edge
+        matrix_adj[i][j] = 1
+        matrix_adj[j][i] = 1 
+        
     return matrix_adj
 
-def get_max_degree(dictionary):
-    max_degree = 0
-    states = []
+def create_matrix_icd(states, edges):
+    num_states = len(states)
+    num_edges = len(edges)
+    matrix_icd = [[0] * num_edges for _ in range(num_states)]
 
-    for state, degrees in dictionary.items():
-        total: int = sum(degrees)
-        if total > max_degree:
-            max_degree = total
-            states = [{"state": state, "borders": [list(dictionary.keys())[i] for i, v in enumerate(dictionary[state]) if v == 1]}]
-        elif total == max_degree:
-            states.append({"state": state, "borders": [list(dictionary.keys())[i] for i, v in enumerate(dictionary[state]) if v == 1]})
+    return matrix_icd
 
-    return {"states": states, "degree": max_degree}
+def calculate_max_degree(states, adjacency_matrix):
+    max_degree = max(sum(row) for row in adjacency_matrix)
+    borders = {}
 
-def get_min_degree(dictionary):
-    min_degree: int = float('inf')
-    states = []
+    for i, state in enumerate(states):
+        degree = sum(adjacency_matrix[i])
+        if degree == max_degree:
+            borders[state] = [states[j] for j, connected in enumerate(adjacency_matrix[i]) if connected]
 
-    for state, degrees in dictionary.items():
-        total: int = sum(degrees)
-        if total < min_degree:
-            min_degree = total
-            states = [{"state": state, "borders": [list(dictionary.keys())[i] for i, v in enumerate(dictionary[state]) if v == 1]}]
-        elif total == min_degree:
-            states.append({"state": state, "borders": [list(dictionary.keys())[i] for i, v in enumerate(dictionary[state]) if v == 1]})
+    result = []
+    for state in borders:
+        result.append({
+            'state': state,
+            'borders': borders[state],
+            'degree': max_degree
+        })
 
-    return {"states": states, "degree": min_degree}
+    return result
 
-def print_result(borders) -> None:
-    for state, connections in borders.items():
-        print(f'{state}: {connections}')
+def calculate_min_degree(states, matrix):
+    min_degree = min(sum(row) for row in matrix)
+    borders = {}
+
+    for i, state in enumerate(states):
+        degree = sum(matrix[i])
+        if degree == min_degree:
+            borders[state] = [states[j] for j, connected in enumerate(matrix[i]) if connected]
+
+    result = []
+    for state in borders:
+        result.append({
+            'state': state,
+            'borders': borders[state],
+            'degree': min_degree
+        })
+
+    return result
+
+def print_matrix(states, matrix):
+    max_state_length = max(len(state) for state in states)
+    header = "   " + " ".join(state.rjust(max_state_length) for state in states)
+    print(header)
+
+    for i, state in enumerate(states):
+        row = state.rjust(max_state_length) + " "
+        for j in range(len(states)):
+            row += str(matrix[i][j]) + "  "
+        print(row)

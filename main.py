@@ -1,46 +1,30 @@
 import json
-from fuctions import create_matrix_adj, get_min_degree, get_max_degree, print_result
+from fuctions import *
 
-borders = {
-    'AC': ['AM', 'RO'],
-    'AL': ['BA', 'SE', 'PE'],
-    'AP': ['PA'],
-    'AM': ['AC', 'RO', 'RR', 'MT', 'PA'],
-    'BA': ['AL', 'SE', 'PE', 'PI', 'TO', 'GO', 'MG', 'ES'],
-    'CE': ['PI', 'PB', 'PE'],
-    'DF': ['GO', 'MG'],
-    'ES': ['BA', 'MG', 'RJ'],
-    'GO': ['BA', 'TO', 'DF', 'MG', 'MS'],
-    'MA': ['PI', 'TO', 'PA'],
-    'MT': ['AM', 'RO', 'PA', 'TO', 'GO', 'MS'],
-    'MS': ['MT', 'GO', 'MG', 'SP', 'PR'],
-    'MG': ['BA', 'ES', 'RJ', 'SP', 'MS', 'GO', 'DF'],
-    'PA': ['AP', 'AM', 'MT', 'TO', 'MA'],
-    'PB': ['CE', 'PE'],
-    'PR': ['MS', 'SP', 'SC'],
-    'PE': ['AL', 'PB', 'CE', 'PI'],
-    'PI': ['MA', 'CE', 'PE', 'BA', 'TO'],
-    'RJ': ['ES', 'MG', 'SP'],
-    'RN': ['PB', 'CE'],
-    'RS': ['SC'],
-    'RO': ['AM', 'AC', 'MT'],
-    'RR': ['AM'],
-    'SC': ['RS', 'PR'],
-    'SP': ['RJ', 'MG', 'MS', 'PR'],
-    'SE': ['AL', 'BA'],
-    'TO': ['MA', 'PI', 'BA', 'GO', 'MT', 'PA']
-}        
+states = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 
+          'PB', 'PE', 'PI','PR', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
 
-matrix_adj = create_matrix_adj(borders)
-print_result(matrix_adj)
+edges = [
+    (0, 2), (0, 21), (1, 15), (1, 4), (1, 25), (2, 22), (2, 21), (2, 13), (2, 10), (3, 13),  
+    (4, 7), (4, 8), (4, 9), (4, 12), (4, 15), (4, 16), (4, 25), (4, 26), (5, 16), (5, 19),  
+    (5, 14), (5, 15), (6, 8), (6, 12), (7, 12), (7, 18), (8, 10), (8, 11), (8, 12), (8, 26),  
+    (9, 13), (9, 16), (9, 26), (10, 11), (10, 13), (10, 21), (10, 26), (11, 12), (11, 17),  
+    (11, 24), (12, 18), (12, 24), (13, 26), (13, 22), (14, 19), (14, 15), (15, 16), (16, 26),  
+    (17, 23), (17, 24), (18, 24), (20, 23)
+]
+
+matrix_adj = create_matrix_adj(states, edges)
+print_matrix(states, matrix_adj)
 print()
 
-max_degree = get_max_degree(matrix_adj)
-print("MAX DEGREE:")
-print(json.dumps(max_degree, indent=4))
+max_degree_adj = format(f'MAX DEGREE STATES:\n {json.dumps(calculate_max_degree(states, matrix_adj), indent=4)}')
+print(max_degree_adj)
 print()
 
-print("MIN DEGREE:")
-min_degree = get_min_degree(matrix_adj)
-print(json.dumps(min_degree, indent=4))
+min_degree_adj = format(f'MIN DEGREE STATES:\n {json.dumps(calculate_min_degree(states, matrix_adj), indent=4)}')
+print(min_degree_adj)
+print()
+
+matrix_icd = create_matrix_icd(states, edges)
+print_matrix(states, matrix_icd)
 print()
