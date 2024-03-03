@@ -1,3 +1,6 @@
+from collections import defaultdict
+import matplotlib.pyplot as plt
+
 def create_matrix_adj(states, edges):
     num_states = len(states)
     matrix_adj = [[0] * num_states for _ in range(num_states)]
@@ -88,3 +91,23 @@ def print_matrix_icd(vertices, matrix):
         for j in range(len(matrix[0])):
             row += str(matrix[i][j]).rjust(max_edge_length) + ' '
         print(row)
+
+def show_hist(states, edges):
+    neighbors = defaultdict(set)
+    for edge in edges:
+        neighbors[states[edge[0]]].add(states[edge[1]])
+        neighbors[states[edge[1]]].add(states[edge[0]])
+
+    for state in states:
+        if state not in neighbors:
+            neighbors[state] = set()
+
+    num_neighbors = [len(neighbors[state]) for state in states]
+        
+    plt.hist(num_neighbors, bins=range(min(num_neighbors), max(num_neighbors)+2), align='left', edgecolor='black')
+    plt.xticks(range(min(num_neighbors), max(num_neighbors)+1))  # Define os ticks no eixo x
+    plt.title('Estados x Fronteiras')
+    plt.xlabel('Fronteiras')
+    plt.ylabel('Estados')
+    plt.grid(True)
+    plt.show()

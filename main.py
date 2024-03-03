@@ -1,4 +1,5 @@
 import json
+
 from fuctions import *
 
 states = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 
@@ -28,3 +29,5 @@ print()
 matrix_icd = create_matrix_icd(states, edges)
 print_matrix_icd(states, matrix_icd)
 print()
+
+show_hist(states, edges)
