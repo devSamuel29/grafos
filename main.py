@@ -14,17 +14,17 @@ edges = [
 ]
 
 matrix_adj = create_matrix_adj(states, edges)
-print_matrix(states, matrix_adj)
+print_matrix_adj(states, matrix_adj)
 print()
 
-max_degree_adj = format(f'MAX DEGREE STATES:\n {json.dumps(calculate_max_degree(states, matrix_adj), indent=4)}')
+max_degree_adj = json.dumps(calculate_max_degree_adj(states, matrix_adj), indent=4)
 print(max_degree_adj)
 print()
 
-min_degree_adj = format(f'MIN DEGREE STATES:\n {json.dumps(calculate_min_degree(states, matrix_adj), indent=4)}')
+min_degree_adj = json.dumps(calculate_min_degree_adj(states, matrix_adj), indent=4)
 print(min_degree_adj)
 print()
 
 matrix_icd = create_matrix_icd(states, edges)
-print_matrix(states, matrix_icd)
+print_matrix_icd(states, matrix_icd)
 print()
