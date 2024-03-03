@@ -58,7 +58,7 @@ def calculate_min_degree_adj(states, matrix):
 
     result = []
 
-    result.append('MAX DEGREE STATES')
+    result.append('MIN DEGREE STATES')
     for state in borders:
         result.append({
             'state': state,
@@ -105,7 +105,7 @@ def show_hist(states, edges):
     num_neighbors = [len(neighbors[state]) for state in states]
         
     plt.hist(num_neighbors, bins=range(min(num_neighbors), max(num_neighbors)+2), align='left', edgecolor='black')
-    plt.xticks(range(min(num_neighbors), max(num_neighbors)+1))  # Define os ticks no eixo x
+    plt.xticks(range(min(num_neighbors), max(num_neighbors)+1))  
     plt.title('Estados x Fronteiras')
     plt.xlabel('Fronteiras')
     plt.ylabel('Estados')
@@ -128,7 +128,6 @@ def create_indexed_list(states, edges):
 
 def print_indexed_list(states, indexed_list):
     for i, adjacent_states in enumerate(indexed_list):
-        # Imprime o estado e seus estados vizinhos
         print(f"{states[i]}: ", end="")
         for adj in adjacent_states:
             print(states[adj], end=", ")
