@@ -30,8 +30,14 @@ matrix_icd = create_matrix_icd(states, edges)
 print_matrix_icd(states, matrix_icd)
 print()
 
-matrix_icd = create_indexed_list(states, edges)
-print_indexed_list(states, matrix_icd)
+indexed_list = create_indexed_list(states, edges)
+print_indexed_list(states, indexed_list)
 print()
+
+max_degree_states = calculate_max_degree_indexed(states, indexed_list)
+print(max_degree_states)
+
+min_degree_states = calculate_min_degree_indexed(states, indexed_list)
+print(min_degree_states)
 
 show_hist(states, edges)

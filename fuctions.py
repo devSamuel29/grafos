@@ -132,3 +132,35 @@ def print_indexed_list(states, indexed_list):
         for adj in adjacent_states:
             print(states[adj], end=", ")
         print()  
+
+
+def calculate_max_degree_indexed(states, indexed_list):
+    max_degree = max(len(adj_states) for adj_states in indexed_list)
+    borders = {}
+
+    for i, adj_states in enumerate(indexed_list):
+        if len(adj_states) == max_degree:
+            borders[states[i]] = [states[j] for j in adj_states]
+
+    result = ['MAX DEGREE STATES']
+    for state, neighbours in borders.items():
+        result.append({'state': state, 'borders': neighbours})
+    result.append(f'degree: {max_degree}')
+
+    return result
+
+def calculate_min_degree_indexed(states, indexed_list):
+    min_degree = min(len(adj_states) for adj_states in indexed_list)
+    borders = {}
+
+    for i, adj_states in enumerate(indexed_list):
+        if len(adj_states) == min_degree:
+            borders[states[i]] = [states[j] for j in adj_states]
+
+    result = ['MIN DEGREE STATES']
+    for state, neighbours in borders.items():
+        result.append({'state': state, 'borders': neighbours})
+    result.append(f'degree: {min_degree}')
+
+    return result
+
