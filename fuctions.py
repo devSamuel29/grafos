@@ -92,6 +92,7 @@ def print_matrix_icd(vertices, matrix):
             row += str(matrix[i][j]).rjust(max_edge_length) + ' '
         print(row)
 
+<<<<<<< Updated upstream
 def show_hist(states, edges):
     neighbors = defaultdict(set)
     for edge in edges:
@@ -111,3 +112,27 @@ def show_hist(states, edges):
     plt.ylabel('Estados')
     plt.grid(True)
     plt.show()
+=======
+
+
+def create_indexed_list(states, edges):
+    matrix_adj = create_matrix_adj(states, edges)
+
+    indexed_list = [[] for _ in range(len(states))]
+
+    for i in range(len(states)):
+        for j in range(len(states)):
+            if matrix_adj[i][j] == 1:
+                indexed_list[i].append(j)
+
+    return indexed_list
+
+
+def print_indexed_list(states, indexed_list):
+    for i, adjacent_states in enumerate(indexed_list):
+        # Imprime o estado e seus estados vizinhos
+        print(f"{states[i]}: ", end="")
+        for adj in adjacent_states:
+            print(states[adj], end=", ")
+        print()  
+>>>>>>> Stashed changes

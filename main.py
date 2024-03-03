@@ -30,4 +30,11 @@ matrix_icd = create_matrix_icd(states, edges)
 print_matrix_icd(states, matrix_icd)
 print()
 
+<<<<<<< Updated upstream
 show_hist(states, edges)
+=======
+matrix_icd = create_indexed_list(states, edges)
+print_indexed_list(states, matrix_icd)
+print()
+
+>>>>>>> Stashed changes
