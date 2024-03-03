@@ -1,6 +1,6 @@
-import json
 
-from fuctions import *
+import json
+from fuctions import create_matrix_adj, calculate_max_degree_adj, calculate_min_degree_adj, print_matrix_adj, show_hist_adj
 
 states = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 
           'PB', 'PE', 'PI','PR', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -26,18 +26,4 @@ min_degree_adj = json.dumps(calculate_min_degree_adj(states, matrix_adj), indent
 print(min_degree_adj)
 print()
 
-matrix_icd = create_matrix_icd(states, edges)
-print_matrix_icd(states, matrix_icd)
-print()
-
-indexed_list = create_indexed_list(states, edges)
-print_indexed_list(states, indexed_list)
-print()
-
-max_degree_states = calculate_max_degree_indexed(states, indexed_list)
-print(max_degree_states)
-
-min_degree_states = calculate_min_degree_indexed(states, indexed_list)
-print(min_degree_states)
-
-show_hist(states, edges)
+show_hist_adj(matrix_adj)
