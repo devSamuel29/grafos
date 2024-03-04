@@ -88,7 +88,62 @@ def create_incidence_matrix(states, edges):
     return incidence_matrix
 
 def calculate_max_degree_icd(incidence_matrix):
-    return
+    max_degree = 0
+    state_degrees = {}
+
+    for state, borders in incidence_matrix.items():
+        degree = sum(borders)
+        state_degrees[state] = degree
+        if degree > max_degree:
+            max_degree = degree
+
+    max_degree_states = ['MAX DEGREE STATES']
+    for state, degree in state_degrees.items():
+        if degree == max_degree:
+            border_states = []
+            for i, border in enumerate(incidence_matrix[state]):
+                if border == 1:
+                    for other_state, other_borders in incidence_matrix.items():
+                        if other_borders[i] == 1 and other_state != state:
+                            border_states.append(other_state)
+                            break
+
+            max_degree_states.append({
+                'state': state,
+                'borders': border_states
+            })
+
+    max_degree_states.append(f'degree: {max_degree}')
+    return json.dumps(max_degree_states, indent=4)
+
+def calculate_min_degree_icd(incidence_matrix):
+    min_degree = float('inf')
+    state_degrees = {}
+
+    for state, borders in incidence_matrix.items():
+        degree = sum(borders)
+        state_degrees[state] = degree
+        if degree < min_degree:
+            min_degree = degree
+
+    min_degree_states = ['MIN DEGREE STATES']
+    for state, degree in state_degrees.items():
+        if degree == min_degree:
+            border_states = []
+            for i, border in enumerate(incidence_matrix[state]):
+                if border == 1:
+                    for other_state, other_borders in incidence_matrix.items():
+                        if other_borders[i] == 1 and other_state != state:
+                            border_states.append(other_state)
+                            break
+
+            min_degree_states.append({
+                'state': state,
+                'borders': border_states
+            })
+
+    min_degree_states.append(f'degree: {min_degree}')
+    return json.dumps(min_degree_states, indent=4)
 
 def print_incidence_matrix(incidence_matrix):
     for state, values in incidence_matrix.items():
