@@ -1,108 +1,101 @@
+import json
 import matplotlib.pyplot as plt
 
-def create_matrix_adj(states, edges):
+# ADJACENCY #
+
+def create_adjacency_matrix(states, edges):
     num_states = len(states)
-    matrix_adj = [[0] * num_states for _ in range(num_states)]
+    adjacency_matrix = {state: [0] * num_states for state in states}
 
     for edge in edges:
         i, j = edge
-        matrix_adj[i][j] = 1
-        matrix_adj[j][i] = 1 
+        adjacency_matrix[states[i]][j] = 1
+        adjacency_matrix[states[j]][i] = 1 
         
-    return matrix_adj
+    return adjacency_matrix
 
-def calculate_max_degree_adj(states, matrix):
-    max_degree = max(sum(row) for row in matrix)
-    borders = {}
+def calculate_max_degree_adj(adjacency_matrix):
+    max_degree = max(sum(connections) for connections in adjacency_matrix.values())
+    max_degree_states = {}
 
-    for i, state in enumerate(states):
-        degree = sum(matrix[i])
+    for state, connections in adjacency_matrix.items():
+        degree = sum(connections)
         if degree == max_degree:
-            borders[state] = [states[j] for j, val in enumerate(matrix[i]) if val]
+            state_index = list(adjacency_matrix.keys()).index(state)
+            max_degree_states[state] = [neighbor_state for neighbor_state, val in adjacency_matrix.items() if val[state_index]]
 
     result = []
 
     result.append('MAX DEGREE STATES')
-    for state in borders:
+    for state, borders in max_degree_states.items():
         result.append({
             'state': state,
-            'borders': borders[state],
+            'borders': borders,
         })
     result.append(f'degree: {max_degree}')
 
-    return result
+    return json.dumps(result, indent=4)
 
 
-def calculate_min_degree_adj(states, matrix):
-    min_degree = min(sum(row) for row in matrix)
-    borders = {}
+def calculate_min_degree_adj(adjacency_matrix):
+    min_degree = min(sum(connections) for connections in adjacency_matrix.values())
+    min_degree_states = {}
 
-    for i, state in enumerate(states):
-        degree = sum(matrix[i])
+    for state, connections in adjacency_matrix.items():
+        degree = sum(connections)
         if degree == min_degree:
-            borders[state] = [states[j] for j, val in enumerate(matrix[i]) if val]
+            state_index = list(adjacency_matrix.keys()).index(state)
+            min_degree_states[state] = [neighbor_state for neighbor_state, val in adjacency_matrix.items() if val[state_index]]
 
     result = []
 
     result.append('MIN DEGREE STATES')
-    for state in borders:
+    for state, borders in min_degree_states.items():
         result.append({
             'state': state,
-            'borders': borders[state],
+            'borders': borders,
         })
     result.append(f'degree: {min_degree}')
 
-    return result
+    return json.dumps(result, indent=4)
 
-def print_matrix_adj(states, matrix):
-    max_state_length = max(len(state) for state in states)
-    header = '   ' + ' '.join(state.rjust(max_state_length) for state in states)
-    print(header)
+def print_adjacency_matrix(adjacency_matrix):
+    for state, values in adjacency_matrix.items():
+        print(f"{state}: {values}")
 
-    for i, state in enumerate(states):
-        row = state.rjust(max_state_length) + ' '
-        for j in range(len(states)):
-            row += str(matrix[i][j]) + '  '
-        print(row)
-
-def show_hist_adj(matrix_adj):
-    num_neighbors = [sum(row) for row in matrix_adj]
+def show_hist_adj(adjacency_matrix):
+    num_neighbors = [sum(connections) for connections in adjacency_matrix.values()]
 
     plt.hist(num_neighbors, bins=range(min(num_neighbors), max(num_neighbors)+2), align='left', edgecolor='black')
     plt.xticks(range(min(num_neighbors), max(num_neighbors)+1))
-    plt.title('Distribuição de Fronteiras dos Estados')
-    plt.xlabel('Número de Fronteiras')
+    plt.title('Distribuição de Vizinhos dos Estados')
+    plt.xlabel('Número de Vizinhos')
     plt.ylabel('Número de Estados')
     plt.grid(True)
     plt.show()
+
+###
+
+# INCIDENCE #
     
-def create_matrix_icd(states, edges):
-    num_states = len(states)
-    num_edges = len(edges)
-    matrix_icd = [[0] * num_edges for _ in range(num_states)]
+def create_incidence_matrix(states, edges):
+    incidence_matrix = {state: [0] * len(edges) for state in states}
 
-    for edge in enumerate(edges):
-        i, j = edge
-        for k in range(0, len(j) - 1):
-            matrix_icd[j[k]][i] = 1
-            matrix_icd[j[k+1]][i] = 1
+    for i, (state_index1, state_index2) in enumerate(edges):
+        incidence_matrix[states[state_index1]][i] = 1
+        incidence_matrix[states[state_index2]][i] = 1
 
-    return matrix_icd
+    return incidence_matrix
 
-def print_matrix_icd(vertices, matrix):
-    max_vertex_length = max(len(str(vertex)) for vertex in vertices)  
-    max_edge_length = len(str(len(matrix[0]))) + 1  
-    header = ' ' * max_vertex_length + ' ' + ' '.join(f'e{i}'.rjust(max_edge_length) for i in range(1, len(matrix[0]) + 1))
-    print(header)
+def calculate_max_degree_icd(incidence_matrix):
+    return
 
-    for i, vertex in enumerate(vertices):
-        row = vertex.rjust(max_vertex_length) 
-        for j in range(len(matrix[0])):
-            row += str(matrix[i][j]).rjust(max_edge_length) + ' '
-        print(row)
+def print_incidence_matrix(incidence_matrix):
+    for state, values in incidence_matrix.items():
+        print(f"{state}: {values}")
         
 def show_hist_icd(incidence_matrix):
-    num_connections = [sum(row) for row in incidence_matrix]
+    num_connections = [sum(values) for values in incidence_matrix.values()]
 
     plt.hist(num_connections, bins=range(min(num_connections), max(num_connections)+2), align='left', edgecolor='black')
     plt.xticks(range(min(num_connections), max(num_connections)+1))
@@ -112,15 +105,19 @@ def show_hist_icd(incidence_matrix):
     plt.grid(True)
     plt.show()
 
+###
+
+# LISTA INDEXADA #
+
 def create_matrix_idx(states, edges):
-    matrix_adj = create_matrix_adj(states, edges)
+    adjacency_matrix = create_adjacency_matrix(states, edges)
 
     indexed_list = {state: [] for state in states}
 
-    for i in range(len(states)):
-        for j in range(len(states)):
-            if matrix_adj[i][j] == 1:
-                indexed_list[states[i]].append(states[j])
+    for state, connections in adjacency_matrix.items():
+        for neighbor_state, connection in zip(states, connections):
+            if connection == 1:
+                indexed_list[state].append(neighbor_state)
 
     return indexed_list
 
@@ -133,7 +130,7 @@ def calculate_max_degree_idx(indexed_list):
         result.append({'state': state, 'borders': neighbours})
     result.append(f'degree: {max_degree}')
 
-    return result
+    return json.dumps(result, indent=4)
 
 def calculate_min_degree_idx(indexed_list):
     min_degree = min(len(neighbours) for neighbours in indexed_list.values())
@@ -144,7 +141,7 @@ def calculate_min_degree_idx(indexed_list):
         result.append({'state': state, 'borders': neighbours})
     result.append(f'degree: {min_degree}')
 
-    return result
+    return json.dumps(result, indent=4)
 
 def print_matrix_idx(indexed_list):
     for state, borders in indexed_list.items():
@@ -161,3 +158,5 @@ def show_hist_idx(indexed_list):
     plt.ylabel('Número de Estados')
     plt.grid(True)
     plt.show()
+
+###

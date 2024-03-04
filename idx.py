@@ -19,11 +19,11 @@ print_matrix_idx(indexed_list)
 print()
 
 max_degree_idx = calculate_max_degree_idx(indexed_list)
-print(json.dumps(max_degree_idx, indent=4))
+print(max_degree_idx)
 print()
 
 min_degree_idx = calculate_min_degree_idx(indexed_list)
-print(json.dumps(min_degree_idx, indent=4))
+print(min_degree_idx)
 print()
 
 show_hist_idx(indexed_list)

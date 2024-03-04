@@ -1,4 +1,5 @@
-from fuctions import create_matrix_icd, print_matrix_icd, show_hist_icd
+import json
+from fuctions import create_incidence_matrix, calculate_max_degree_icd, print_incidence_matrix, show_hist_icd
 
 states = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 
           'PB', 'PE', 'PI','PR', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -12,8 +13,12 @@ edges = [
     (17, 23), (17, 24), (18, 24), (20, 23)
 ]
 
-matrix_icd = create_matrix_icd(states, edges)
-print_matrix_icd(states, matrix_icd)
+matrix_icd = create_incidence_matrix(states, edges)
+print_incidence_matrix(matrix_icd)
 print()
+
+# max_degree_icd = json.dumps(calculate_max_degree_icd(matrix_icd), indent=4)
+# print(max_degree_icd)
+# print()
 
 show_hist_icd(matrix_icd)
