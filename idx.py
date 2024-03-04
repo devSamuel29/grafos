@@ -1,6 +1,5 @@
 import json
-
-from fuctions import create_matrix_idx, print_matrix_idx, show_hist_idx
+from fuctions import create_matrix_idx, calculate_max_degree_idx, calculate_min_degree_idx, print_matrix_idx, show_hist_idx
 
 states = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 
           'PB', 'PE', 'PI','PR', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -17,6 +16,14 @@ edges = [
 
 indexed_list = create_matrix_idx(states, edges)
 print_matrix_idx(indexed_list)
+print()
+
+max_degree_idx = calculate_max_degree_idx(indexed_list)
+print(json.dumps(max_degree_idx, indent=4))
+print()
+
+min_degree_idx = calculate_min_degree_idx(indexed_list)
+print(json.dumps(min_degree_idx, indent=4))
 print()
 
 show_hist_idx(indexed_list)

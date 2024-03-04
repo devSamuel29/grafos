@@ -124,6 +124,28 @@ def create_matrix_idx(states, edges):
 
     return indexed_list
 
+def calculate_max_degree_idx(indexed_list):
+    max_degree = max(len(neighbours) for neighbours in indexed_list.values())
+    max_degree_states = {state: neighbours for state, neighbours in indexed_list.items() if len(neighbours) == max_degree}
+
+    result = ['MAX DEGREE STATES']
+    for state, neighbours in max_degree_states.items():
+        result.append({'state': state, 'borders': neighbours})
+    result.append(f'degree: {max_degree}')
+
+    return result
+
+def calculate_min_degree_idx(indexed_list):
+    min_degree = min(len(neighbours) for neighbours in indexed_list.values())
+    min_degree_states = {state: neighbours for state, neighbours in indexed_list.items() if len(neighbours) == min_degree}
+
+    result = ['MIN DEGREE STATES']
+    for state, neighbours in min_degree_states.items():
+        result.append({'state': state, 'borders': neighbours})
+    result.append(f'degree: {min_degree}')
+
+    return result
+
 def print_matrix_idx(indexed_list):
     for state, borders in indexed_list.items():
         borders_str = ', '.join(borders)
@@ -139,4 +161,3 @@ def show_hist_idx(indexed_list):
     plt.ylabel('Número de Estados')
     plt.grid(True)
     plt.show()
-
