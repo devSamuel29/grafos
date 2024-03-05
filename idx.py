@@ -1,5 +1,4 @@
-import json
-from fuctions import create_matrix_idx, calculate_max_degree_idx, calculate_min_degree_idx, print_matrix_idx, show_hist_idx
+from fuctions import create_list_idx, calculate_max_degree_idx, calculate_min_degree_idx, print_matrix_idx, show_hist_idx
 
 states = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 
           'PB', 'PE', 'PI','PR', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -34,26 +33,16 @@ edges =  [
     (26, 4), (26, 8), (26, 9), (26, 10), (26, 13), (26, 16)
 ]
 
-def create_list_idx(states, edges):
-    connections = {}
-    beta = []
-    alpha = [0] 
+list_idx = create_list_idx(states, edges)
+print_matrix_idx(list_idx)
+print()
 
-    for edge in edges:
-        beta.append(states[edge[1]])
+max_degree_idx = calculate_max_degree_idx(list_idx)
+print(max_degree_idx)
+print()
 
-    for i in range(1, len(edges)):
-        if edges[i][0] != edges[i - 1][0]:
-            alpha.append(i)
-    alpha.append(len(edges)) 
+min_degree_idx = calculate_min_degree_idx(list_idx)
+print(min_degree_idx)
+print()
 
-    for i in range(len(alpha) - 1):
-        state = states[edges[alpha[i]][0]]
-        connected_states = beta[alpha[i]:alpha[i + 1]]
-        connections[state] = sorted(list(set(connected_states)))
-
-    return connections                  
-        
-      
-
-print(create_list_idx(states, edges))
+show_hist_idx(list_idx)

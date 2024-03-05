@@ -164,17 +164,25 @@ def show_hist_icd(incidence_matrix):
 
 # LISTA INDEXADA #
 
-def create_matrix_idx(states, edges):
-    adjacency_matrix = create_adjacency_matrix(states, edges)
+def create_list_idx(states, edges):
+    connections = {}
+    beta = []
+    alpha = [0] 
 
-    indexed_list = {state: [] for state in states}
+    for edge in edges:
+        beta.append(states[edge[1]])
 
-    for state, connections in adjacency_matrix.items():
-        for neighbor_state, connection in zip(states, connections):
-            if connection == 1:
-                indexed_list[state].append(neighbor_state)
+    for i in range(1, len(edges)):
+        if edges[i][0] != edges[i - 1][0]:
+            alpha.append(i)
+    alpha.append(len(edges)) 
 
-    return indexed_list
+    for i in range(len(alpha) - 1):
+        state = states[edges[alpha[i]][0]]
+        connected_states = beta[alpha[i]:alpha[i + 1]]
+        connections[state] = sorted(list(set(connected_states)))
+
+    return connections    
 
 def calculate_max_degree_idx(indexed_list):
     max_degree = max(len(neighbours) for neighbours in indexed_list.values())
