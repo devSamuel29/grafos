@@ -4,7 +4,7 @@ def dirac(graph: tuple):
     n = len(set(v for e in graph for v in e))
 
     if n < 3:
-        return 'Não é um grafo de Dirac'
+        return 'O Teorema de Dirac não é satisfeito para o grafo dado.'
     
     degree_count = {v: 0 for v in range(1, n + 1)}
     for edge in graph:
@@ -14,7 +14,7 @@ def dirac(graph: tuple):
     min_degree = min(degree_count.values())
     
     if min_degree < n / 2: 
-        return 'O grafo não satisfaz o Teorema de Dirac'
+        return 'O Teorema de Dirac não é satisfeito para o grafo dado.'
 
     return 'O grafo satisfaz o Teorema de Dirac'
 
