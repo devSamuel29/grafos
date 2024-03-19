@@ -8,11 +8,7 @@ def get_degree(graph):
         for v in edge:
             degree_count[v] += 1
 
-    sorted_degree = sorted(degree_count.items(), key=lambda item: item[1], reverse=True)
-
-    sorted_dict = {vertex: degree for vertex, degree in sorted_degree}
-
-    return sorted_dict
+    return degree_count
 
 def bondy_chvatal(graph: list):
     n = len(set(v for e in graph for v in e))
@@ -28,7 +24,7 @@ def bondy_chvatal(graph: list):
             if (i, j) not in graph and (j, i) not in graph:
                 non_adj.append((i, j))
 
-    non_adj_sorted = sorted(non_adj, key=lambda pair: degree_count[pair[0]] + degree_count[pair[1]], reverse=True)
+    non_adj_sorted = sorted(non_adj, key=lambda pair: degree_count[pair[0]] + degree_count[pair[1]], reverse=True) 
 
     for vertex_pair in non_adj_sorted:
         i, j = vertex_pair
@@ -42,7 +38,7 @@ def bondy_chvatal(graph: list):
                 if degree_count[i] + degree_count[j] < n:
                     return 'O Teorema de Bondy e Chvátal não é satisfeito para o grafo dado.'
                 
-    return 'O grafo satisfaz o Teorema de Bondy e Chvátal'
+    return 'O grafo satisfaz o Teorema de Bondy e Chvátal.'
 
 print('TEOREMA DE BONDY E CHVATAL')
 print(graph1)
