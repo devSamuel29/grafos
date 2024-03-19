@@ -1,12 +1,12 @@
 from graphs import *
 
-def dirac(graph: tuple):
+def dirac(graph: list):
     n = len(set(v for e in graph for v in e))
 
     if n < 3:
         return 'O Teorema de Dirac não é satisfeito para o grafo dado.'
     
-    degree_count = {v: 0 for v in range(1, n + 1)}
+    degree_count = {v: 0 for v in range(0, n)}
     for edge in graph:
         for v in edge:
             degree_count[v] += 1 

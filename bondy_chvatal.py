@@ -1,20 +1,16 @@
 from graphs import *
 
-def bondy_chvatal(graph: tuple):
+def bondy_chvatal(graph: list):
     n = len(set(v for e in graph for v in e))
 
     if n < 3:
         return 'O Teorema de Bondy e Chvátal não é satisfeito para o grafo dado.'
-    
-    for i in range(len(graph)):
-        for j in range(i+1, len(graph)):
-            u, v = graph[i]
-            x, y = graph[j]
-            if u != x and u != y and v != x and v != y:
-                degree_sum = sum((u == edge[0] or u == edge[1]) + (v == edge[0] or v == edge[1]) for edge in graph)
-                if degree_sum < n:
-                    return 'O Teorema de Bondy e Chvátal não é satisfeito para o grafo dado.'
-    
+        
+    for i in range(n):
+        for j in range(i + 1, n):
+            if (i, j) not in graph and (j, i) not in graph:
+                graph.append((i, j))
+
     return 'O grafo satisfaz o Teorema de Bondy e Chvátal'
 
 print('TEOREMA DE BONDY E CHVATAL')
