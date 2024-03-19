@@ -32,6 +32,12 @@ def bondy_chvatal(graph: list):
             graph.append(vertex_pair)
             degree_count = get_degree(graph)
 
+    min_degree = max(degree_count.values())
+    max_degree = min(degree_count.values())
+
+    if not min_degree == max_degree:
+        return 'O Teorema de Bondy e Chvátal não é satisfeito para o grafo dado.'
+
     for i in range(0, n):
         for j in range(i, n):
             if (i, j) not in graph and (j, i) not in graph:
