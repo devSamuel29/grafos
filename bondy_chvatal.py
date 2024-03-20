@@ -37,12 +37,6 @@ def bondy_chvatal(graph: list):
 
     if not min_degree == max_degree:
         return 'O Teorema de Bondy e Chvátal não é satisfeito para o grafo dado.'
-
-    for i in range(0, n):
-        for j in range(i, n):
-            if (i, j) not in graph and (j, i) not in graph:
-                if degree_count[i] + degree_count[j] < n:
-                    return 'O Teorema de Bondy e Chvátal não é satisfeito para o grafo dado.'
                 
     return 'O grafo satisfaz o Teorema de Bondy e Chvátal.'
 
