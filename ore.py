@@ -2,9 +2,6 @@ from graphs import *
 
 def ore(graph: list):
     n = len(set(v for e in graph for v in e))
-
-    if n < 3:
-        return 'O Teorema de Ore não é satisfeito para o grafo dado.'
     
     degree_count = {v: 0 for v in range(0, n)}
     for edge in graph:

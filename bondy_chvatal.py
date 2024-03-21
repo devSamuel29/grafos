@@ -13,9 +13,6 @@ def get_degree(graph):
 def bondy_chvatal(graph: list):
     n = len(set(v for e in graph for v in e))
 
-    if n < 3:
-        return 'O Teorema de Bondy e Chvátal não é satisfeito para o grafo dado.'
-    
     degree_count = get_degree(graph)
     non_adj = []
 
@@ -26,18 +23,16 @@ def bondy_chvatal(graph: list):
 
     non_adj_sorted = sorted(non_adj, key=lambda pair: degree_count[pair[0]] + degree_count[pair[1]], reverse=True) 
 
-    for vertex_pair in non_adj_sorted:
-        i, j = vertex_pair
+    for edge in non_adj_sorted:
+        i, j = edge
         if degree_count[i] + degree_count[j] >= n:
-            graph.append(vertex_pair)
+            graph.append(edge)
             degree_count = get_degree(graph)
 
-    min_degree = max(degree_count.values())
-    max_degree = min(degree_count.values())
+    for degree in degree_count.values():
+        if(degree < n-1): 
+            return 'O Teorema de Bondy e Chvátal não é satisfeito para o grafo dado.'
 
-    if not min_degree == max_degree:
-        return 'O Teorema de Bondy e Chvátal não é satisfeito para o grafo dado.'
-                
     return 'O grafo satisfaz o Teorema de Bondy e Chvátal.'
 
 print('TEOREMA DE BONDY E CHVATAL')
