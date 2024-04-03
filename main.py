@@ -13,11 +13,11 @@ def euler(graph: tuple):
     count_vertex_degree_odd = sum(1 for degree in graph_degrees.values() if degree % 2 != 0)
 
     if count_vertex_degree_odd == 0:
-        return 'O grafo é Euleriano!'
+        return True, 'O grafo é Euleriano!'
     elif count_vertex_degree_odd == 2:
-        return 'O grafo é Semi-Euleriano!'
+        return True, 'O grafo é Semi-Euleriano!'
 
-    return 'Não é Euleriano!'
+    return False, 'Não é Euleriano!'
 
 def get_weights(graph: tuple):
     n = len(graph)
@@ -25,30 +25,27 @@ def get_weights(graph: tuple):
     return weights
 
 def get_path(graph: tuple):
+    isEulerian, euler_type = euler(graph)
+
+    if(not isEulerian):
+        return f'{euler_type}\nNão é possível montar o Caminho Euleriano'
+
     weights = get_weights(graph)
     graph_degrees = get_degree(graph)
-    count_vertex_degree_odd = sum(1 for degree in graph_degrees.values() if degree % 2 != 0)
 
-    if count_vertex_degree_odd > 2:
-        return 'Impossível de fazer o Caminho de Euler!'
-
-    return weights
+    return f'{euler_type}\nretornar o caminho'
 
 print('GRAFO 1')
-print(euler(graph1))
 print(get_path(graph1))
 print()
 
 print('GRAFO 2')
-print(euler(graph2))
 print(get_path(graph2))
 print()
 
 print('GRAFO 3')
-print(euler(graph3))
 print(get_path(graph3))
 print()
 
 print('GRAFO 4')
-print(euler(graph4))
 print(get_path(graph4))
