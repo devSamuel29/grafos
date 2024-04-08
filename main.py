@@ -29,11 +29,38 @@ def get_path(graph: tuple):
 
     if(not isEulerian):
         return f'{euler_type}\nNão é possível montar o Caminho Euleriano'
-
+    
     weights = get_weights(graph)
     graph_degrees = get_degree(graph)
+    start_vertex = next(iter(graph_degrees))
 
-    return f'{euler_type}\nretornar o caminho'
+    # Inicializa a lista de caminho com o primeiro vértice
+    path = [start_vertex]
+
+    while len(graph) > 0:
+        current_vertex = path[-1]
+        possible_edges = [edge for edge in graph if current_vertex in edge]
+
+        if len(possible_edges) == 0:
+            break
+
+        if len(possible_edges) == 1:
+            edge = possible_edges[0]
+        else:
+            edge_weights = [weights[i] for i, e in enumerate(possible_edges)]
+            min_weight = min(edge_weights)
+            min_weight_index = edge_weights.index(min_weight)
+            edge = possible_edges[min_weight_index]
+
+        if edge[0] == current_vertex:
+            next_vertex = edge[1]
+        else:
+            next_vertex = edge[0]
+
+        path.append(next_vertex)
+        graph.remove(edge)
+
+    return f'{euler_type}\nCaminho Euleriano: {path}'
 
 print('GRAFO 1')
 print(get_path(graph1))
