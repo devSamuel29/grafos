@@ -27,15 +27,15 @@ def get_weights(graph: tuple):
 def get_path(graph: tuple):
     isEulerian, euler_type = euler(graph)
 
-    if(not isEulerian):
+    if not isEulerian:
         return f'{euler_type}\nNão é possível montar o Caminho Euleriano'
-    
+
     weights = get_weights(graph)
     graph_degrees = get_degree(graph)
     start_vertex = next(iter(graph_degrees))
-
-    # Inicializa a lista de caminho com o primeiro vértice
     path = [start_vertex]
+    total_weight = 0  # Inicializa o peso total como 0
+    weight_sequence = []  # Inicializa a sequência de pesos
 
     while len(graph) > 0:
         current_vertex = path[-1]
@@ -47,7 +47,7 @@ def get_path(graph: tuple):
         if len(possible_edges) == 1:
             edge = possible_edges[0]
         else:
-            edge_weights = [weights[i] for i, e in enumerate(possible_edges)]
+            edge_weights = [weights[graph.index(e)] for e in possible_edges]
             min_weight = min(edge_weights)
             min_weight_index = edge_weights.index(min_weight)
             edge = possible_edges[min_weight_index]
@@ -57,10 +57,21 @@ def get_path(graph: tuple):
         else:
             next_vertex = edge[0]
 
+        weight = weights[graph.index(edge)]
+        total_weight += weight  # Adiciona o peso da aresta ao total
+        weight_sequence.append((edge, weight))  # Adiciona a aresta e seu peso à sequência
         path.append(next_vertex)
         graph.remove(edge)
 
-    return f'{euler_type}\nCaminho Euleriano: {path}'
+    # Monta a string do caminho com setas "->"
+    path_str = " -> ".join(map(str, path))
+    # Monta a string da sequência de cálculo dos pesos
+    weight_sequence_str = "\n".join([f"Aresta: {edge}, Peso: {weight}" for edge, weight in weight_sequence])
+    return f'{euler_type}\nCaminho Euleriano: {path_str}\nPeso Total: {total_weight}\nSequência de Cálculo:\n{weight_sequence_str}'
+
+
+
+
 
 print('GRAFO 1')
 print(get_path(graph1))
