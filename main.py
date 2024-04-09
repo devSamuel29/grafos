@@ -75,9 +75,7 @@ def get_path(graph: tuple):
         path.pop()
         total_weight -= weight_sequence.pop()[1]
 
-    # Monta a string do caminho com setas "->"
     path_str = " -> ".join(map(str, path))
-    # Monta a string da sequência de cálculo dos pesos
     weight_sequence_str = "\n".join([f"Aresta: {edge}, Peso: {weight}" for edge, weight in weight_sequence])
     return f'{euler_type}\nCaminho Euleriano: {path_str}\nPeso Total: {total_weight}\nSequência de Cálculo:\n{weight_sequence_str}'
 
