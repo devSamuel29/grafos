@@ -36,6 +36,13 @@ def get_path(graph: tuple):
     path = [start_vertex]
     total_weight = 0  # Inicializa o peso total como 0
     weight_sequence = []  # Inicializa a sequência de pesos
+    end_vertex = None  # Inicializa o vértice de chegada como None
+
+    if euler_type == 'O grafo é Semi-Euleriano!':
+        odd_vertices = [v for v, degree in graph_degrees.items() if degree % 2 != 0]
+        start_vertex = odd_vertices[0]
+        end_vertex = odd_vertices[1]
+        path = [start_vertex]  # Inicializa o caminho com o vértice ímpar
 
     while len(graph) > 0:
         current_vertex = path[-1]
@@ -63,11 +70,22 @@ def get_path(graph: tuple):
         path.append(next_vertex)
         graph.remove(edge)
 
+    # Se o caminho não terminar no vértice ímpar de chegada, remove o último vértice e a última aresta da sequência
+    if end_vertex is not None and len(path) > 1 and path[-1] != end_vertex:
+        path.pop()
+        total_weight -= weight_sequence.pop()[1]
+
     # Monta a string do caminho com setas "->"
     path_str = " -> ".join(map(str, path))
     # Monta a string da sequência de cálculo dos pesos
     weight_sequence_str = "\n".join([f"Aresta: {edge}, Peso: {weight}" for edge, weight in weight_sequence])
     return f'{euler_type}\nCaminho Euleriano: {path_str}\nPeso Total: {total_weight}\nSequência de Cálculo:\n{weight_sequence_str}'
+
+
+
+
+
+
 
 
 
