@@ -1,51 +1,93 @@
-import random
-from graphs import *
+import json
+from math import inf
+import igraph as ig
+from collections import deque
 
-def get_degree(graph) -> dict:
-    n = len(set(v for e in graph for v in e))
+def generate_tree(graph, initial_vertex):
+    state_vertex = {vertex: 'not visited' for vertex in range(len(graph))}
+    depth_vertex = [inf] * len(graph)
+   
+    queue = deque()
+    
+    initial_vertex = int(initial_vertex) - 1
+    queue.append(initial_vertex)
+    depth_vertex[initial_vertex] = 0
 
-    degree_count = {v: sum(1 for edge in graph if v in edge) for v in range(n)}
+    bfs_tree = []
+    aux_graph = graph
 
-    return degree_count
+    while queue:
+        current_vertex = queue.popleft()
+        neighbors = [i for i, edges in enumerate(aux_graph[current_vertex]) if edges == 1]
+        for neighbor in neighbors:
+            if state_vertex[neighbor] == 'not visited':
+                state_vertex[neighbor] = 'discovered'
+                queue.append(neighbor)
+                aux_graph[current_vertex][neighbor] = 0
+                aux_graph[neighbor][current_vertex] = 0
 
-def euler(graph: tuple):
-    graph_degrees = get_degree(graph)
-    count_vertex_degree_odd = sum(1 for degree in graph_degrees.values() if degree % 2 != 0)
+                depth_vertex[neighbor] = depth_vertex[current_vertex] + 1
+                bfs_tree.append((current_vertex, neighbor))
+        state_vertex[current_vertex] = 'visited'
+    return bfs_tree, depth_vertex
 
-    if count_vertex_degree_odd == 0:
-        return True, 'O grafo é Euleriano!'
-    elif count_vertex_degree_odd == 2:
-        return True, 'O grafo é Semi-Euleriano!'
+def draw_tree(tree, depth, root):
+    g = ig.Graph(directed=True)
+    g.add_vertices(len(depth))
 
-    return False, 'Não é Euleriano!'
+    labels = [f'{i+1}\n({depth[i]})' for i in range(len(depth))]
+    g.vs["label"] = labels
 
-def get_weights(graph: tuple):
-    n = len(graph)
-    weights = [random.randint(0, 10) for _ in range(n)]
-    return weights
+    g.add_edges(tree)
 
-def get_path(graph: tuple):
-    isEulerian, euler_type = euler(graph)
+    layout = g.layout_reingold_tilford(root=[int(root) - 1])
 
-    if(not isEulerian):
-        return f'{euler_type}\nNão é possível montar o Caminho Euleriano'
+    plot = ig.plot(g, layout=layout, vertex_size=30, vertex_color='lightblue',
+                   vertex_label_size=14, vertex_label_color='black', vertex_label_font='Arial',
+                   edge_color='brown', edge_arrow_size=1)
+    plot.save(f'Root{root}.png')
 
-    weights = get_weights(graph)
-    graph_degrees = get_degree(graph)
 
-    return f'{euler_type}\nretornar o caminho'
+def bfs(tree, root, destination):
+    root = root - 1
+    destination = destination - 1
+    paths = {root: [root]}
+    visited = set([root])
+    queue = deque([root])
 
-print('GRAFO 1')
-print(get_path(graph1))
-print()
+    while queue:
+        current_vertex = queue.popleft()
+        for parent, child in tree:
+            if parent == current_vertex and child not in visited:
+                path_to_child = paths[current_vertex] + [child]
+                paths[child] = path_to_child
+                visited.add(child)
+                queue.append(child)
+    path = paths.get(destination, None)
+    return ' -> '.join(map(lambda vertex: str(vertex + 1), path)) if path else None
 
-print('GRAFO 2')
-print(get_path(graph2))
-print()
+file = json.load(open('response.json'))
 
-print('GRAFO 3')
-print(get_path(graph3))
-print()
+num_vertices = file['numEdges']
 
-print('GRAFO 4')
-print(get_path(graph4))
+edges = file['edges']
+
+vertices = [i for i in range(int(num_vertices))]
+
+graph = [[0] * num_vertices for _ in range(num_vertices)]
+for edge in edges:
+    graph[edge[0] - 1][edge[1] - 1] = 1
+    graph[edge[1] - 1][edge[0] - 1] = 1
+
+initialVertex = file['initialVertex']
+finalVertex = file['finalVertex']
+
+bfs_tree, depth = generate_tree(graph, initialVertex)
+draw_tree(bfs_tree, depth, initialVertex)
+
+shortest_path = bfs(bfs_tree, initialVertex, 5)
+
+if shortest_path:
+    print(shortest_path)
+else:
+    print(f'No path found')
