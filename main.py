@@ -3,7 +3,6 @@ import json
 from math import inf
 import igraph as ig
 from collections import deque
-
 class NotVisited:
     pass
 
@@ -50,7 +49,7 @@ def draw_tree(tree, depth, root):
 
     g.add_edges(tree)
 
-    layout = g.layout_reingold_tilford(root=[int(root) - 1])
+    layout = g.layout_reingold_tilford(root=[root - 1])
 
     plot = ig.plot(g, layout=layout, vertex_size=30, vertex_color='lightblue',
                    vertex_label_size=14, vertex_label_color='black', vertex_label_font='Arial',
@@ -80,12 +79,9 @@ def shortest_path(tree, root, destination):
     return None
 
 file = json.load(open('response.json'))
-
 num_vertices = file['numEdges']
-
 edges = file['edges']
-
-vertices = [i for i in range(int(num_vertices))]
+vertices = [i for i in range(num_vertices)]
 
 graph = [[0] * num_vertices for _ in range(num_vertices)]
 for edge in edges:

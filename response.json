@@ -1,7 +1,7 @@
 {
     "numEdges": 5,
     "initialVertex": 5,
-    "finalVertex": 2,
+    "finalVertex": 1,
     "edges": [
         [
             1,
