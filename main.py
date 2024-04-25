@@ -4,8 +4,17 @@ from math import inf
 import igraph as ig
 from collections import deque
 
+class NotVisited:
+    pass
+
+class Discovered:
+    pass
+
+class Visited:
+    pass
+
 def generate_bfs_tree(graph, initial_vertex):
-    state_vertex = {vertex: 'not visited' for vertex in range(len(graph))}
+    state_vertex = {vertex: type(NotVisited()) for vertex in range(len(graph))}
     depth_vertex = [inf] * len(graph)
    
     queue = deque()
@@ -21,15 +30,15 @@ def generate_bfs_tree(graph, initial_vertex):
         current_vertex = queue.popleft()
         neighbors = [i for i, edges in enumerate(aux_graph[current_vertex]) if edges == 1]
         for neighbor in neighbors:
-            if state_vertex[neighbor] == 'not visited':
-                state_vertex[neighbor] = 'discovered'
+            if state_vertex[neighbor] == type(NotVisited()):
+                state_vertex[neighbor] = type(Discovered())
                 queue.append(neighbor)
                 aux_graph[current_vertex][neighbor] = 0
                 aux_graph[neighbor][current_vertex] = 0
 
                 depth_vertex[neighbor] = depth_vertex[current_vertex] + 1
                 bfs_tree.append((current_vertex, neighbor))
-        state_vertex[current_vertex] = 'visited'
+        state_vertex[current_vertex] = type(Visited())
     return bfs_tree, depth_vertex
 
 def draw_tree(tree, depth, root):
@@ -48,7 +57,6 @@ def draw_tree(tree, depth, root):
                    edge_color='brown', edge_arrow_size=1)
     plot.save(f'Root{root}.png')
 
-
 def shortest_path(tree, root, destination):
     root = root - 1
     destination = destination - 1
@@ -65,7 +73,11 @@ def shortest_path(tree, root, destination):
                 visited.add(child)
                 queue.append(child)
     path = paths.get(destination)
-    return ' -> '.join(map(lambda vertex: str(vertex + 1), path)) if path else None
+
+    if path:
+        return  ' -> '.join(map(lambda vertex: str(vertex + 1), path))
+    
+    return None
 
 file = json.load(open('response.json'))
 
