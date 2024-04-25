@@ -3,6 +3,7 @@ import json
 from math import inf
 import igraph as ig
 from collections import deque
+
 class NotVisited:
     pass
 
@@ -45,7 +46,7 @@ def draw_tree(tree, depth, root):
     g.add_vertices(len(depth))
 
     labels = [f'{i+1}\n({depth[i]})' for i in range(len(depth))]
-    g.vs["label"] = labels
+    g.vs['label'] = labels
 
     g.add_edges(tree)
 
