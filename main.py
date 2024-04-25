@@ -1,20 +1,21 @@
+from copy import deepcopy
 import json
 from math import inf
 import igraph as ig
 from collections import deque
 
-def generate_tree(graph, initial_vertex):
+def generate_bfs_tree(graph, initial_vertex):
     state_vertex = {vertex: 'not visited' for vertex in range(len(graph))}
     depth_vertex = [inf] * len(graph)
    
     queue = deque()
     
-    initial_vertex = int(initial_vertex) - 1
+    initial_vertex = initial_vertex - 1
     queue.append(initial_vertex)
     depth_vertex[initial_vertex] = 0
 
     bfs_tree = []
-    aux_graph = graph
+    aux_graph = deepcopy(graph)
 
     while queue:
         current_vertex = queue.popleft()
@@ -48,7 +49,7 @@ def draw_tree(tree, depth, root):
     plot.save(f'Root{root}.png')
 
 
-def bfs(tree, root, destination):
+def shortest_path(tree, root, destination):
     root = root - 1
     destination = destination - 1
     paths = {root: [root]}
@@ -63,7 +64,7 @@ def bfs(tree, root, destination):
                 paths[child] = path_to_child
                 visited.add(child)
                 queue.append(child)
-    path = paths.get(destination, None)
+    path = paths.get(destination)
     return ' -> '.join(map(lambda vertex: str(vertex + 1), path)) if path else None
 
 file = json.load(open('response.json'))
@@ -82,10 +83,10 @@ for edge in edges:
 initialVertex = file['initialVertex']
 finalVertex = file['finalVertex']
 
-bfs_tree, depth = generate_tree(graph, initialVertex)
+bfs_tree, depth = generate_bfs_tree(graph, initialVertex)
 draw_tree(bfs_tree, depth, initialVertex)
 
-shortest_path = bfs(bfs_tree, initialVertex, 5)
+shortest_path = shortest_path(bfs_tree, initialVertex, finalVertex)
 
 if shortest_path:
     print(shortest_path)
