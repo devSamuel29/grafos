@@ -91,4 +91,4 @@ shortest_path = shortest_path(bfs_tree, initialVertex, finalVertex)
 if shortest_path:
     print(shortest_path)
 else:
-    print(f'No path found')
+    print('No path found')
