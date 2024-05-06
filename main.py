@@ -23,17 +23,17 @@ def dfs_iterative(graph: list, initial_vertex: int) -> list:
     tree = []
 
     while stack:
-        u, v = stack.pop()
-        if u not in visited:
-            visited.add(u)
-            if v is not None:
-                tree.append((v, u))
+        child, parent = stack.pop()
+        if child not in visited:
+            visited.add(child)
+            if parent is not None:
+                tree.append((parent, child))
 
             for edge in graph:
-                if u in edge:
-                    neighbor = edge[0] if edge[1] == u else edge[1]
+                if child in edge:
+                    neighbor = edge[0] if edge[1] == child else edge[1]
                     if neighbor not in visited:
-                        stack.append((neighbor, u))
+                        stack.append((neighbor, child))
 
     return tree
 
@@ -60,8 +60,5 @@ inital_vertex = data['initialVertex']
 
 dfs_recursive_result = dfs_recursive(edges, inital_vertex)
 dfs_iterative_result = dfs_iterative(edges, inital_vertex)
-
-print(dfs_recursive_result)
-print(dfs_iterative_result)
 
 plot(dfs_recursive_result, dfs_iterative_result)
