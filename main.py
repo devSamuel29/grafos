@@ -1,103 +1,67 @@
-from copy import deepcopy
-import json
-from math import inf
-import igraph as ig
-from collections import deque
+from json import load
+import networkx as nx
+import matplotlib.pyplot as plt
 
-class NotVisited:
-    pass
+def dfs_recursive(graph: list, vertex: int, visited: set = None) -> list: 
+    if visited is None:
+        visited = set()
 
-class Discovered:
-    pass
+    visited.add(vertex)
+    tree = []
+    for edge in graph:
+        if vertex in edge:
+            neighbor = edge[0] if edge[1] == vertex else edge[1]
+            if neighbor not in visited:
+                tree.append((vertex, neighbor))
+                tree.extend(dfs_recursive(graph, neighbor, visited))
 
-class Visited:
-    pass
+    return tree
 
-def generate_bfs_tree(graph, initial_vertex):
-    state_vertex = {vertex: type(NotVisited()) for vertex in range(len(graph))}
-    depth_vertex = [inf] * len(graph)
-   
-    queue = deque()
+def dfs_iterative(graph: list, initial_vertex: int) -> list:
+    visited = set()
+    stack = [(initial_vertex, None)]
+    tree = []
+
+    while stack:
+        u, v = stack.pop()
+        if u not in visited:
+            visited.add(u)
+            if v is not None:
+                tree.append((v, u))
+
+            for edge in graph:
+                if u in edge:
+                    neighbor = edge[0] if edge[1] == u else edge[1]
+                    if neighbor not in visited:
+                        stack.append((neighbor, u))
+
+    return tree
+
+def plot(dfs_recursive: list, dfs_interative: list) -> None:
+    plt.figure(figsize=(12, 6))
+    plt.subplot(1, 2, 1)
+    T_recursive = nx.Graph(dfs_recursive)
+    nx.draw(T_recursive, with_labels=True, node_color='skyblue', font_size=12, font_weight='bold')
+    plt.title("Árvore DFS Recursiva")
+
+    plt.subplot(1, 2, 2)
+    T_iterative = nx.Graph(dfs_interative)
+    nx.draw(T_iterative, with_labels=True, node_color='lightgreen', font_size=12, font_weight='bold')
+    plt.title("Árvore DFS Iterativa")
     
-    initial_vertex = initial_vertex - 1
-    queue.append(initial_vertex)
-    depth_vertex[initial_vertex] = 0
+    plt.tight_layout()
+    plt.show()
 
-    bfs_tree = []
-    aux_graph = deepcopy(graph)
+with open('response.json') as f:
+    data = load(f)
 
-    while queue:
-        current_vertex = queue.popleft()
-        neighbors = [i for i, edges in enumerate(aux_graph[current_vertex]) if edges == 1]
-        for neighbor in neighbors:
-            if state_vertex[neighbor] == type(NotVisited()):
-                state_vertex[neighbor] = type(Discovered())
-                queue.append(neighbor)
-                aux_graph[current_vertex][neighbor] = 0
-                aux_graph[neighbor][current_vertex] = 0
+edges = data['edges']
+inital_vertex = data['initialVertex']
 
-                depth_vertex[neighbor] = depth_vertex[current_vertex] + 1
-                bfs_tree.append((current_vertex, neighbor))
-        state_vertex[current_vertex] = type(Visited())
-    return bfs_tree, depth_vertex
+dfs_recursive_result = dfs_recursive(edges, inital_vertex)
+dfs_iterative_result = dfs_iterative(edges, inital_vertex)
 
-def draw_tree(tree, depth, root):
-    g = ig.Graph(directed=True)
-    g.add_vertices(len(depth))
+print(dfs_recursive_result)
+print(dfs_iterative_result)
 
-    labels = [f'{i+1}\n({depth[i]})' for i in range(len(depth))]
-    g.vs['label'] = labels
-
-    g.add_edges(tree)
-
-    layout = g.layout_reingold_tilford(root=[root - 1])
-
-    plot = ig.plot(g, layout=layout, vertex_size=30, vertex_color='lightblue',
-                   vertex_label_size=14, vertex_label_color='black', vertex_label_font='Arial',
-                   edge_color='brown', edge_arrow_size=1)
-    plot.save(f'Root{root}.png')
-
-def shortest_path(tree, root, destination):
-    root = root - 1
-    destination = destination - 1
-    paths = {root: [root]}
-    visited = set([root])
-    queue = deque([root])
-
-    while queue:
-        current_vertex = queue.popleft()
-        for parent, child in tree:
-            if parent == current_vertex and child not in visited:
-                path_to_child = paths[current_vertex] + [child]
-                paths[child] = path_to_child
-                visited.add(child)
-                queue.append(child)
-    path = paths.get(destination)
-
-    if path:
-        return  ' -> '.join(map(lambda vertex: str(vertex + 1), path))
-    
-    return None
-
-file = json.load(open('response.json'))
-num_vertices = file['numEdges']
-edges = file['edges']
-vertices = [i for i in range(num_vertices)]
-
-graph = [[0] * num_vertices for _ in range(num_vertices)]
-for edge in edges:
-    graph[edge[0] - 1][edge[1] - 1] = 1
-    graph[edge[1] - 1][edge[0] - 1] = 1
-
-initialVertex = file['initialVertex']
-finalVertex = file['finalVertex']
-
-bfs_tree, depth = generate_bfs_tree(graph, initialVertex)
-draw_tree(bfs_tree, depth, initialVertex)
-
-shortest_path = shortest_path(bfs_tree, initialVertex, finalVertex)
-
-if shortest_path:
-    print(shortest_path)
-else:
-    print('No path found')
+plot(dfs_recursive_result, dfs_iterative_result)
