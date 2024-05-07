@@ -28,22 +28,22 @@ def dfs_iterative(graph: list, initial_vertex: int) -> list:
 
     ##enquanto houver vertices na pilha
     while stack:
-        ## u -> vertice atual; v -> pai do vertice atual
-        u, v = stack.pop()
-        if u not in visited:
-            visited.add(u)
+        ## child -> vertice atual; parent -> pai do vertice atual
+        child, parent = stack.pop()
+        if child not in visited:
+            visited.add(child)
 
             ##verifica se nao eh o primeiro da stack
-            if v is not None:
-                tree.append((v, u))
+            if parent is not None:
+                tree.append((parent, child))
 
             for edge in graph:
                 ##verifica se a aresta tem U como vertice
-                if u in edge:
-                    ## caso o edge[1] seja igual ao vertice atual (u), entao o vertice edge[0] eh vizinho do que estamos procurando
-                    neighbor = edge[0] if edge[1] == u else edge[1]
+                if child in edge:
+                    ## caso o edge[1] seja igual ao vertice atual (child), entao o vertice edge[0] eh vizinho do que estamos procurando
+                    neighbor = edge[0] if edge[1] == child else edge[1]
                     if neighbor not in visited:
-                        stack.append((neighbor, u))
+                        stack.append((neighbor, child))
 
     return tree
 
@@ -70,8 +70,5 @@ inital_vertex = data['initialVertex']
 
 dfs_recursive_result = dfs_recursive(edges, inital_vertex)
 dfs_iterative_result = dfs_iterative(edges, inital_vertex)
-
-print(dfs_recursive_result)
-print(dfs_iterative_result)
 
 plot(dfs_recursive_result, dfs_iterative_result)
