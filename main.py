@@ -1,64 +1,49 @@
-from json import load
-import networkx as nx
-import matplotlib.pyplot as plt
+from json import loads, dumps
+ 
+with open('response.json') as json_file:
+    data = loads(json_file.read())
 
-def dfs_recursive(graph: list, vertex: int, visited: set = None) -> list: 
-    if visited is None:
-        visited = set()
+def dijkstra(graph, start_vertex):
+    vertexes = sorted(list(graph.keys()))
+    size = len(vertexes)
+    start_index = vertexes.index(start_vertex)
+    distances = [float('inf')] * size
+    distances[start_index] = 0
+    visited = [False] * size
+    paths = {vertex: [] for vertex in vertexes}
+ 
+    for _ in range(size):
+        min_distance = float('inf')
+        u = None
+        for i in range(size):
+            if not visited[i] and distances[i] < min_distance:
+                min_distance = distances[i]
+                u = i
 
-    visited.add(vertex)
-    tree = []
-    for edge in graph:
-        if vertex in edge:
-            neighbor = edge[0] if edge[1] == vertex else edge[1]
-            if neighbor not in visited:
-                tree.append((vertex, neighbor))
-                tree.extend(dfs_recursive(graph, neighbor, visited))
+        if u is None:
+            break
 
-    return tree
+        visited[u] = True
 
-def dfs_iterative(graph: list, initial_vertex: int) -> list:
-    visited = set()
-    stack = [(initial_vertex, None)]
-    tree = []
+        for neighbor, weight in graph[vertexes[u]].items():
+            v = vertexes.index(neighbor)
+            if not visited[v]:
+                alt = distances[u] + weight
+                if alt < distances[v]:
+                    distances[v] = alt
+                    paths[neighbor] = paths[vertexes[u]] + [neighbor]
 
-    while stack:
-        child, parent = stack.pop()
-        if child not in visited:
-            visited.add(child)
-            if parent is not None:
-                tree.append((parent, child))
+    result = {}
+    for vertex, distance in zip(vertexes, distances):
+        if distance == float('inf'):
+            result[vertex] = {'distance': 'Infinity', 'path': 'Nao existe um caminho possivel!'}
+        else:
+            path = [start_vertex] + paths[vertex] if vertex != start_vertex else []
+            path_str = ' -> '.join(path)
+            result[vertex] = {'distance': distance, 'path': path_str}
 
-            for edge in graph:
-                if child in edge:
-                    neighbor = edge[0] if edge[1] == child else edge[1]
-                    if neighbor not in visited:
-                        stack.append((neighbor, child))
+    return result
 
-    return tree
-
-def plot(dfs_recursive: list, dfs_interative: list) -> None:
-    plt.figure(figsize=(12, 6))
-    plt.subplot(1, 2, 1)
-    T_recursive = nx.Graph(dfs_recursive)
-    nx.draw(T_recursive, with_labels=True, node_color='skyblue', font_size=12, font_weight='bold')
-    plt.title("Árvore DFS Recursiva")
-
-    plt.subplot(1, 2, 2)
-    T_iterative = nx.Graph(dfs_interative)
-    nx.draw(T_iterative, with_labels=True, node_color='lightgreen', font_size=12, font_weight='bold')
-    plt.title("Árvore DFS Iterativa")
-    
-    plt.tight_layout()
-    plt.show()
-
-with open('response.json') as f:
-    data = load(f)
-
-edges = data['edges']
-inital_vertex = data['initialVertex']
-
-dfs_recursive_result = dfs_recursive(edges, inital_vertex)
-dfs_iterative_result = dfs_iterative(edges, inital_vertex)
-
-plot(dfs_recursive_result, dfs_iterative_result)
+initalVertex = 'A'
+print(f'Vertice inicial: {initalVertex}')
+print(dumps(dijkstra(data, initalVertex), indent=4))
