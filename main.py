@@ -1,49 +1,68 @@
-from json import loads, dumps
- 
-with open('response.json') as json_file:
-    data = loads(json_file.read())
+from json import dumps, load
 
-def dijkstra(graph, start_vertex):
-    vertexes = sorted(list(graph.keys()))
-    size = len(vertexes)
-    start_index = vertexes.index(start_vertex)
-    distances = [float('inf')] * size
-    distances[start_index] = 0
-    visited = [False] * size
-    paths = {vertex: [] for vertex in vertexes}
- 
-    for _ in range(size):
-        min_distance = float('inf')
-        u = None
-        for i in range(size):
-            if not visited[i] and distances[i] < min_distance:
-                min_distance = distances[i]
-                u = i
+def bellman_ford(graph, vertexes, initial_vertex):
+    # Inicializa o número de vértices e define as distâncias iniciais como infinito
+    num_vertexes = len(vertexes)
+    distances = {vertex: float('inf') for vertex in vertexes} # Inicializa as distancias como infinito para todos o vertices
+    distances[initial_vertex] = 0  # A distância do vértice inicial para ele mesmo é 0
+    predecessors = {vertex: None for vertex in vertexes} # Predecessores são inicialmente None
 
-        if u is None:
-            break
+    # Cria uma lista de todas as arestas no grafo, com seus respectivos pesos
+    edges = []
+    for u in graph:
+        for v in graph[u]:
+            edges.append((u, v, graph[u][v]))
+            print(edges)
 
-        visited[u] = True
+    # Relaxa todas as arestas num_vertexes - 1 vezes
+    for _ in range(num_vertexes - 1):
+        for u, v, weight in edges:
+            # Verifica se a distância pode ser reduzida
+            if distances[u] != float('inf') and distances[u] + weight < distances[v]:
+                distances[v] = distances[u] + weight
+                predecessors[v] = u  # Atualiza o predecessor
 
-        for neighbor, weight in graph[vertexes[u]].items():
-            v = vertexes.index(neighbor)
-            if not visited[v]:
-                alt = distances[u] + weight
-                if alt < distances[v]:
-                    distances[v] = alt
-                    paths[neighbor] = paths[vertexes[u]] + [neighbor]
+    # Verifica por ciclos de peso negativo
+    for _ in range(num_vertexes - 1):
+        for u, v, weight in edges:
+            if distances[u] != float('inf') and distances[u] + weight < distances[v]:
+                distances[v] = float('-inf')
+                predecessors[v] = None  # Remove o predecessor
 
+    # Verifica novamente para marcar todos os vértices alcançáveis a partir de ciclos de peso negativo
+    for _ in range(num_vertexes - 1):
+        for u, v, weight in edges:
+            if distances[u] == float('-inf'):
+                distances[v] = float('-inf')
+                predecessors[v] = None
+
+    # Cria o resultado final, com caminhos e pesos para cada vértice
     result = {}
-    for vertex, distance in zip(vertexes, distances):
-        if distance == float('inf'):
-            result[vertex] = {'distance': 'Infinity', 'path': 'Nao existe um caminho possivel!'}
+
+    for vertex in vertexes:
+        if distances[vertex] == float('inf'):
+            result[vertex] = {'path': 'There is no possible path!', 'weight': float('inf')}
+        elif distances[vertex] == float('-inf'):
+            result[vertex] = {'path': 'There is no possible path! (Cyclic)', 'weight': float('-inf')}
         else:
-            path = [start_vertex] + paths[vertex] if vertex != start_vertex else []
-            path_str = ' -> '.join(path)
-            result[vertex] = {'distance': distance, 'path': path_str}
+            # Reconstrói o caminho a partir dos predecessores
+            path = []
+            current_vertex = vertex
+            while current_vertex is not None:
+                path.insert(0, current_vertex)
+                current_vertex = predecessors[current_vertex]
+            result[vertex] = {'path': ' -> '.join(path), 'weight': distances[vertex]}
+    
+    # Ordena o resultado de acordo com os vértices
+    sorted_result = {vertex: result[vertex] for vertex in sorted(result.keys())}
+    return sorted_result
 
-    return result
+with open('response.json') as json_file:
+    data = load(json_file)
+    
+vertexes = set(data.keys())
+initialVertex = 'S'
 
-initalVertex = 'A'
-print(f'Vertice inicial: {initalVertex}')
-print(dumps(dijkstra(data, initalVertex), indent=4))
+distances = bellman_ford(data, vertexes, initialVertex)
+print(f'Vertice inicial: {initialVertex}')
+print(dumps(distances, indent=4))
